@@ -96,6 +96,8 @@ native CA_RayCastReflectionVector(Float:startx, Float:starty, Float:startz, Floa
 native CA_RayCastLineNormal(Float:startx, Float:starty, Float:startz, Float:endx, Float:endy, Float:endz, &Float:x, &Float:y, &Float:z, &Float:nx, &Float:ny, &Float:nz);
 native CA_EulerToQuat(Float:rx, Float:ry, Float:rz, &Float:x, &Float:y, &Float:z, &Float:w);
 native CA_QuatToEuler(Float:x, Float:y, Float:z, Float:w, &Float:rx, &Float:ry, &Float:rz);
+native CA_GetVectorAngles(Float:x, Float:y, Float:z, &Float:elevation, &Float:facing);
+native Float:CA_NormalizeAngle(Float:angle);
 native CA_GetModelBoundingSphere(modelid, &Float:offx, &Float:offy, &Float:offz, &Float:radius);
 
 // Extended raycast function returns internal pointer of mapobject class instead of modelid

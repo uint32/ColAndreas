@@ -81,6 +81,8 @@ AMX_NATIVE_INFO PluginNatives[] =
 	{ "CA_DestroyObject", ColAndreasNatives::CA_DestroyObject },
 	{ "CA_EulerToQuat", ColAndreasNatives::CA_EulerToQuat },
 	{ "CA_QuatToEuler", ColAndreasNatives::CA_QuatToEuler },
+	{ "CA_GetVectorAngles", ColAndreasNatives::CA_GetVectorAngles },
+	{ "CA_NormalizeAngle", ColAndreasNatives::CA_NormalizeAngle },
 	{ "CA_RemoveBuilding", ColAndreasNatives::CA_RemoveBuilding },
 	{ "CA_SetObjectPos", ColAndreasNatives::CA_SetObjectPos },
 	{ "CA_SetObjectRot", ColAndreasNatives::CA_SetObjectRot },

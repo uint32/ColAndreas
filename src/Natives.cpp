@@ -315,6 +315,31 @@ cell AMX_NATIVE_CALL ColAndreasNatives::CA_QuatToEuler(AMX *amx, cell *params)
 	return 1;
 }
 
+cell AMX_NATIVE_CALL ColAndreasNatives::CA_GetVectorAngles(AMX *amx, cell *params)
+{
+	btVector3 vector(amx_ctof(params[1]), amx_ctof(params[2]), amx_ctof(params[3]));
+	
+	if(!vector.length2()) return 0;
+	
+	cell* addr[2];
+	amx_GetAddr(amx, params[4], &addr[0]);
+	amx_GetAddr(amx, params[5], &addr[1]);
+	
+	float elevation = collisionWorld->GetElevationAngle(vector);
+	float facing = collisionWorld->GetFacingAngle(vector);
+	
+	*addr[0] = amx_ftoc(elevation);
+	*addr[1] = amx_ftoc(facing);
+	
+	return 1;
+}
+
+cell AMX_NATIVE_CALL ColAndreasNatives::CA_NormalizeAngle(AMX* amx, cell* params)
+{
+	float normalized = collisionWorld->NormalizeAngle(amx_ctof(params[1]));
+	return amx_ftoc(normalized);
+}
+
 cell AMX_NATIVE_CALL ColAndreasNatives::CA_RemoveBuilding(AMX *amx, cell *params)
 {
 	if (!colInit)
