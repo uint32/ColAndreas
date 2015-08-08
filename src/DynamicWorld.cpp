@@ -124,7 +124,7 @@ int ColAndreasWorld::performRayTestEx(const btVector3& Start, const btVector3& E
 	return 0;
 }
 
-int ColAndreasWorld::performRayTestAngle(const btVector3& Start, const btVector3& End, btVector3& Result, btScalar& RX, btScalar& RY, btScalar& RZ, uint16_t& model)
+int ColAndreasWorld::performRayTestAngle(const btVector3& Start, const btVector3& End, btVector3& Result, btScalar& Elevation, btScalar& Facing, uint16_t& model)
 {
 	btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
 
@@ -132,8 +132,8 @@ int ColAndreasWorld::performRayTestAngle(const btVector3& Start, const btVector3
 
 	if (RayCallback.hasHit())
 	{
-		RY = GetElevationAngle(RayCallback.m_hitNormalWorld);
-		RZ = GetFacingAngle(RayCallback.m_hitNormalWorld);
+		Elevation = GetElevationAngle(RayCallback.m_hitNormalWorld);
+		Facing = GetFacingAngle(RayCallback.m_hitNormalWorld);
 		
 		Result = RayCallback.m_hitPointWorld;
 		model = RayCallback.m_collisionObject->getUserIndex();
@@ -143,7 +143,7 @@ int ColAndreasWorld::performRayTestAngle(const btVector3& Start, const btVector3
 	return 0;
 }
 
-int ColAndreasWorld::performRayTestAngleEx(const btVector3& Start, const btVector3& End, btVector3& Result, btScalar& RX, btScalar& RY, btScalar& RZ, btQuaternion& Rotation, btVector3& Position, uint16_t& model)
+int ColAndreasWorld::performRayTestAngleEx(const btVector3& Start, const btVector3& End, btVector3& Result, btScalar& Elevation, btScalar& Facing, btQuaternion& Rotation, btVector3& Position, uint16_t& model)
 {
 	btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
 
@@ -151,8 +151,8 @@ int ColAndreasWorld::performRayTestAngleEx(const btVector3& Start, const btVecto
 
 	if (RayCallback.hasHit())
 	{
-		RY = GetElevationAngle(RayCallback.m_hitNormalWorld);
-		RZ = GetFacingAngle(RayCallback.m_hitNormalWorld);
+		Elevation = GetElevationAngle(RayCallback.m_hitNormalWorld);
+		Facing = GetFacingAngle(RayCallback.m_hitNormalWorld);
 		
 		Result = RayCallback.m_hitPointWorld;
 		model = RayCallback.m_collisionObject->getUserIndex();

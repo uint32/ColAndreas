@@ -100,34 +100,31 @@ cell AMX_NATIVE_CALL ColAndreasNatives::CA_RayCastLineEx(AMX *amx, cell *params)
 
 cell AMX_NATIVE_CALL ColAndreasNatives::CA_RayCastLineAngle(AMX *amx, cell *params)
 {
-	cell* addr[6];
+	cell* addr[5];
 
 	// Adding a small value prevents a potential crash if all values are the same
 	btVector3 Start = btVector3(btScalar(amx_ctof(params[1]) + 0.00001), btScalar(amx_ctof(params[2]) + 0.00001), btScalar(amx_ctof(params[3]) + 0.00001));
 	btVector3 End = btVector3(btScalar(amx_ctof(params[4])), btScalar(amx_ctof(params[5])), btScalar(amx_ctof(params[6])));
 	btVector3 Result;
 	btVector3 Rotation;
-	btScalar RX;
-	btScalar RY;
-	btScalar RZ;
+	btScalar Elevation;
+	btScalar Facing;
 	uint16_t model = 0;
 
-	if (collisionWorld->performRayTestAngle(Start, End, Result, RX, RY, RZ, model))
+	if (collisionWorld->performRayTestAngle(Start, End, Result, Elevation, Facing, model))
 	{
-		//Get our adderesses for the last 6
+		//Get our addresses for the last 5
 		amx_GetAddr(amx, params[7], &addr[0]);
 		amx_GetAddr(amx, params[8], &addr[1]);
 		amx_GetAddr(amx, params[9], &addr[2]);
 		amx_GetAddr(amx, params[10], &addr[3]);
 		amx_GetAddr(amx, params[11], &addr[4]);
-		amx_GetAddr(amx, params[12], &addr[5]);
 
 		*addr[0] = amx_ftoc(Result.getX());
 		*addr[1] = amx_ftoc(Result.getY());
 		*addr[2] = amx_ftoc(Result.getZ());
-		*addr[3] = amx_ftoc(RX);
-		*addr[4] = amx_ftoc(RY);
-		*addr[5] = amx_ftoc(RZ);
+		*addr[3] = amx_ftoc(Elevation);
+		*addr[4] = amx_ftoc(Facing);
 
 		return model;
 	}
@@ -136,7 +133,7 @@ cell AMX_NATIVE_CALL ColAndreasNatives::CA_RayCastLineAngle(AMX *amx, cell *para
 
 cell AMX_NATIVE_CALL ColAndreasNatives::CA_RayCastLineAngleEx(AMX *amx, cell *params)
 {
-	cell* addr[12];
+	cell* addr[11];
 
 	// Adding a small value prevents a potential crash if all values are the same
 	btVector3 Start = btVector3(btScalar(amx_ctof(params[1]) + 0.00001), btScalar(amx_ctof(params[2]) + 0.00001), btScalar(amx_ctof(params[3]) + 0.00001));
@@ -145,14 +142,13 @@ cell AMX_NATIVE_CALL ColAndreasNatives::CA_RayCastLineAngleEx(AMX *amx, cell *pa
 	btVector3 Rotation;
 	btQuaternion ObjectRotation;
 	btVector3 ObjectPosition;
-	btScalar RX;
-	btScalar RY;
-	btScalar RZ;
+	btScalar Elevation;
+	btScalar Facing;
 	uint16_t Model = 0;
 
-	if (collisionWorld->performRayTestAngleEx(Start, End, Result, RX, RY, RZ, ObjectRotation, ObjectPosition, Model))
+	if (collisionWorld->performRayTestAngleEx(Start, End, Result, Elevation, Facing, ObjectRotation, ObjectPosition, Model))
 	{
-		//Get our adderesses for the last 5
+		//Get our addresses for the last 11
 		amx_GetAddr(amx, params[7], &addr[0]);
 		amx_GetAddr(amx, params[8], &addr[1]);
 		amx_GetAddr(amx, params[9], &addr[2]);
@@ -165,25 +161,22 @@ cell AMX_NATIVE_CALL ColAndreasNatives::CA_RayCastLineAngleEx(AMX *amx, cell *pa
 		amx_GetAddr(amx, params[15], &addr[8]);
 		amx_GetAddr(amx, params[16], &addr[9]);
 		amx_GetAddr(amx, params[17], &addr[10]);
-		amx_GetAddr(amx, params[18], &addr[11]);
-
 
 		*addr[0] = amx_ftoc(Result.getX());
 		*addr[1] = amx_ftoc(Result.getY());
 		*addr[2] = amx_ftoc(Result.getZ());
-		*addr[3] = amx_ftoc(RX);
-		*addr[4] = amx_ftoc(RY);
-		*addr[5] = amx_ftoc(RZ);
+		*addr[3] = amx_ftoc(Elevation);
+		*addr[4] = amx_ftoc(Facing);
 
-		*addr[6] = amx_ftoc(ObjectPosition.getX());
-		*addr[7] = amx_ftoc(ObjectPosition.getY());
-		*addr[8] = amx_ftoc(ObjectPosition.getZ());
+		*addr[5] = amx_ftoc(ObjectPosition.getX());
+		*addr[6] = amx_ftoc(ObjectPosition.getY());
+		*addr[7] = amx_ftoc(ObjectPosition.getZ());
 
 		collisionWorld->QuatToEuler(ObjectRotation, Result);
 
-		*addr[9] = amx_ftoc(Result.getX());
-		*addr[10] = amx_ftoc(Result.getY());
-		*addr[11] = amx_ftoc(Result.getZ());
+		*addr[8] = amx_ftoc(Result.getX());
+		*addr[9] = amx_ftoc(Result.getY());
+		*addr[10] = amx_ftoc(Result.getZ());
 
 		return Model;
 	}
