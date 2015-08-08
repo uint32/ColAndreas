@@ -72,7 +72,10 @@ float ColAndreasWorld::GetFacingAngle(btVector3& vector)
 	if(vector.x() < 0 && vector.y() == 0) return 90.0f;
 	if(vector.x() > 0 && vector.y() == 0) return 270.0f;
 	
-	return NormalizeAngle(-((atan(vector.x() / vector.y()) * 180.0f) / 3.14159265f));
+	if(vector.y() > 0)
+		return NormalizeAngle(-((atan(vector.x() / vector.y()) * 180.0f) / 3.14159265f));
+	
+	return NormalizeAngle(180.0f - ((atan(vector.x() / vector.y()) * 180.0f) / 3.14159265f));
 }
 
 float ColAndreasWorld::GetElevationAngle(btVector3& vector)
