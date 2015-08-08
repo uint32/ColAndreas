@@ -39,7 +39,7 @@ btScalar ColAndreasWorld::getDist3D(const btVector3& c1, const btVector3& c2)
 	return sqrt((btScalar)(dx * dx + dy * dy + dz * dz));
 }
 
-	// Converts GTA rotations to quaternion
+// Converts GTA rotations to quaternion
 void ColAndreasWorld::EulerToQuat(btVector3& rotation, btQuaternion& result)
 {
 	rotation.setX(rotation.getX() * DEG_TO_RAD);
@@ -65,6 +65,31 @@ void ColAndreasWorld::QuatToEuler(btQuaternion& rotation, btVector3& result)
 	result.setY((-asin(2 * ((rotation.getX() * rotation.getZ()) + (rotation.getW() * rotation.getY()))) * RADIAN_TO_DEG) );
 	result.setX((atan2(2 * ((rotation.getY() * rotation.getZ()) + (rotation.getW() * rotation.getX())), (rotation.getW() * rotation.getW()) - (rotation.getX() * rotation.getX()) - (rotation.getY() * rotation.getY()) + (rotation.getZ() * rotation.getZ())) * RADIAN_TO_DEG) );
 	result.setZ((-atan2(2 * ((rotation.getX() * rotation.getY()) + (rotation.getW() * rotation.getZ())), (rotation.getW() * rotation.getW()) + (rotation.getX() * rotation.getX()) - (rotation.getY() * rotation.getY()) - (rotation.getZ() * rotation.getZ())) * RADIAN_TO_DEG) );
+}
+
+float ColAndreasWorld::GetFacingAngle(btVector3& vector)
+{
+	if(vector.x() < 0 && vector.y() == 0) return 90.0f;
+	if(vector.x() > 0 && vector.y() == 0) return 270.0f;
+	
+	return NormalizeAngle(-((atan(vector.x() / vector.y()) * 180.0f) / 3.14159265f));
+}
+
+float ColAndreasWorld::GetElevationAngle(btVector3& vector)
+{
+	btVector3 vector2D(vector.x(), vector.y(), 0.0f);
+	
+	return NormalizeAngle(-(vector.angle(vector2D) * 180.0f) / 3.1415926f);
+}
+
+float ColAndreasWorld::NormalizeAngle(float angle)
+{
+	float result = fmod(angle, 360.0f);
+	
+	if(result < 0.0f)
+		result += 360.0f;
+	
+	return result;
 }
 
 int ColAndreasWorld::performRayTest(const btVector3& Start, const btVector3& End, btVector3& Result, uint16_t& model)
@@ -99,7 +124,6 @@ int ColAndreasWorld::performRayTestEx(const btVector3& Start, const btVector3& E
 	return 0;
 }
 
-
 int ColAndreasWorld::performRayTestAngle(const btVector3& Start, const btVector3& End, btVector3& Result, btScalar& RX, btScalar& RY, btScalar& RZ, uint16_t& model)
 {
 	btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
@@ -108,13 +132,12 @@ int ColAndreasWorld::performRayTestAngle(const btVector3& Start, const btVector3
 
 	if (RayCallback.hasHit())
 	{
-		btVector3 Rotation = RayCallback.m_hitNormalWorld;
-		RX = -(asin(Rotation.getY())*RADIAN_TO_DEG);
-		RY = asin(Rotation.getX())*RADIAN_TO_DEG;
-		// I think there is a way to calculate this not sure how yet
-		RZ = 0.0;
+		RY = GetElevationAngle(RayCallback.m_hitNormalWorld);
+		RZ = GetFacingAngle(RayCallback.m_hitNormalWorld);
+		
 		Result = RayCallback.m_hitPointWorld;
 		model = RayCallback.m_collisionObject->getUserIndex();
+		
 		return 1;
 	}
 	return 0;
@@ -128,19 +151,14 @@ int ColAndreasWorld::performRayTestAngleEx(const btVector3& Start, const btVecto
 
 	if (RayCallback.hasHit())
 	{
-		btVector3 Normal = RayCallback.m_hitNormalWorld;
+		RY = GetElevationAngle(RayCallback.m_hitNormalWorld);
+		RZ = GetFacingAngle(RayCallback.m_hitNormalWorld);
 		
-
-		RX = -(asin(Normal.getY())*RADIAN_TO_DEG);
-		RY = asin(Normal.getX())*RADIAN_TO_DEG;
-		// There is a way to calculate this not sure how yet
-		RZ = 0.0;
 		Result = RayCallback.m_hitPointWorld;
-
-
 		model = RayCallback.m_collisionObject->getUserIndex();
 		Rotation = RayCallback.m_collisionObject->getWorldTransform().getRotation();
 		Position = RayCallback.m_collisionObject->getWorldTransform().getOrigin();
+		
 		return 1;
 	}
 	return 0;
@@ -153,7 +171,6 @@ int ColAndreasWorld::performRayTestAll(const btVector3& Start, const btVector3& 
 
 	dynamicsWorld->rayTest(Start, End, RayCallback);
 
-
 	if (RayCallback.hasHit())
 	{
 		if (RayCallback.m_hitPointWorld.size() <= size)
@@ -161,7 +178,6 @@ int ColAndreasWorld::performRayTestAll(const btVector3& Start, const btVector3& 
 			for (int i = 0; i < RayCallback.m_hitPointWorld.size(); i++)
 			{
 				ModelIDs[i] = RayCallback.m_collisionObjects[i]->getUserIndex();
-
 			}
 
 			Result = RayCallback.m_hitPointWorld;
